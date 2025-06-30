@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Cuan Store</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body,
+      html {
+        width: 100%;
+        height: 100%;
+        font-family: "Arial", sans-serif;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* Video background */
+      #bg-video {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+      }
+
+      /* Blur + overlay gelap agar form terbaca */
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(4px);
+        z-index: 0;
+      }
+
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f3f3f3;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      .login-container {
+        position: relative;
+        z-index: 1;
+        background-color: rgba(255, 255, 255, 0.85);
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+      }
+
+      .banner img {
+        width: 100%;
+        display: block;
+      }
+
+      .form-content {
+        padding: 30px 20px;
+      }
+
+      h2 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #2e2e72;
+        letter-spacing: 1px;
+      }
+
+      .input-group {
+        margin-bottom: 15px;
+      }
+      .input-group label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+      .input-group input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
+      }
+
+      .input-password {
+        position: relative;
+      }
+      .toggle-password {
+        position: absolute;
+        right: 12px;
+        top: 38px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        color: #666;
+      }
+
+      .form-options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+      }
+      .form-options a {
+        color: #6a1b9a;
+        text-decoration: none;
+      }
+      .form-options a:hover {
+        text-decoration: underline;
+      }
+
+      .login-button {
+        width: 100%;
+        padding: 12px;
+        background: linear-gradient(135deg, #4b3f72, #2e2e72);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .login-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+      }
+
+      .register-text {
+        text-align: center;
+        margin-top: 15px;
+        font-size: 0.9rem;
+      }
+      .register-text a {
+        color: #007bff;
+        text-decoration: none;
+      }
+      .register-text a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Video background -->
+    <video id="bg-video" autoplay muted loop>
+      <source src="videos/valorant.mp4" type="video/mp4" />
+      <!-- Fallback image -->
+      <img src="images/bg-fallback.jpg" alt="Background Fallback" />
+    </video>
+
+    <!-- Semi-transparent overlay -->
+    <div class="overlay"></div>
+
+    <div class="login-container">
+      <div class="banner">
+        <img src="images/CUAN STORE.png" alt="Welcome Banner" />
+      </div>
+      <div class="form-content">
+        <h2>Selamat Datang</h2>
+
+        <form onsubmit="login(event)">
+          <div class="input-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" required />
+          </div>
+
+          <div class="input-group input-password">
+            <label for="password">Password</label>
+            <input type="password" id="password" required />
+            <span class="toggle-password" onclick="togglePassword()"></span>
+          </div>
+
+          <div class="form-options">
+            <label><input type="checkbox" /> Ingat saya</label>
+            <a href="forgot_password.html">Lupa password?</a>
+          </div>
+
+          <button type="submit" class="login-button">Masuk</button>
+        </form>
+
+        <div class="register-text">
+          Belum punya akun? <a href="register.html">Daftar di sini</a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function togglePassword() {
+        const pwd = document.getElementById("password");
+        pwd.type = pwd.type === "password" ? "text" : "password";
+      }
+
+      function login(event) {
+        event.preventDefault();
+
+        // Ambil input email & password dari form
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        // — Jalur LOGIN PELANGGAN seperti semula —
+        const savedUser = JSON.parse(localStorage.getItem("cuanUser"));
+        if (!savedUser) {
+          alert("Belum ada akun. Silakan daftar dulu.");
+          window.location.href = "register.html";
+          return;
+        }
+
+        if (email === savedUser.email && password === savedUser.password) {
+          alert("Login berhasil!");
+          window.location.href = "home.html";
+        } else {
+          alert("Email atau password salah.");
+        }
+      }
+    </script>
+  </body>
+</html>

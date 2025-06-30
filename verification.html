@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verifikasi OTP</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #e0f7fa, #f1f8e9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+
+      .container {
+        background: #ffffff;
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 420px;
+        text-align: center;
+      }
+
+      h2 {
+        margin-bottom: 1rem;
+        color: #2e7d32;
+      }
+
+      p {
+        font-size: 0.95rem;
+        color: #555;
+        margin-bottom: 1.5rem;
+      }
+
+      #otpInput {
+        letter-spacing: 12px;
+        font-size: 2rem;
+        padding: 0.8rem;
+        width: 100%;
+        max-width: 240px;
+        text-align: center;
+        border: 1px solid #ccc;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+      }
+
+      button {
+        width: 100%;
+        padding: 0.9rem;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #388e3c;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Verifikasi OTP</h2>
+      <p>Masukkan 6 digit kode OTP yang telah dikirim ke email Anda.</p>
+      <input type="text" id="otpInput" maxlength="6" placeholder="______" />
+      <button onclick="verifyOtp()">Verifikasi</button>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const ctx = localStorage.getItem("context");
+        if (!ctx) {
+          window.location.href = "register.html";
+        }
+      });
+
+      function verifyOtp() {
+        const input = document.getElementById("otpInput").value.trim();
+        const ctx = localStorage.getItem("context");
+        const storedCode =
+          ctx === "reset"
+            ? localStorage.getItem("resetOtp")
+            : localStorage.getItem("verificationCode");
+
+        if (input === storedCode) {
+          alert("Verifikasi berhasil!");
+          if (ctx === "reset") {
+            window.location.href = "new_password.html";
+          } else {
+            const user = JSON.parse(localStorage.getItem("cuanUser")) || {};
+            user.verified = true;
+            localStorage.setItem("cuanUser", JSON.stringify(user));
+            window.location.href = "home.html";
+          }
+          localStorage.removeItem("context");
+        } else {
+          alert("Kode OTP salah. Silakan coba lagi.");
+        }
+      }
+    </script>
+  </body>
+</html>

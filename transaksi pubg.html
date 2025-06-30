@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pembayaran Mobile Legends – CuanStore</title>
+    <style>
+      /* Reset & Base */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background-color: #2a0e47;
+        font-family: "Segoe UI", Tahoma, sans-serif;
+        color: #fff;
+        line-height: 1.5;
+        padding: 20px;
+      }
+      a {
+        color: #fff;
+        text-decoration: underline;
+      }
+      button {
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+      /* Container */
+      .container {
+        max-width: 400px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      /* Card */
+      .card {
+        background: #fff;
+        color: #333;
+        border-radius: 16px;
+        padding: 20px;
+      }
+      /* Order Summary */
+      .order-summary h2 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+        color: #2a0e47;
+      }
+      .order-summary .row {
+        display: flex;
+        justify-content: space-between;
+        margin: 8px 0;
+      }
+      .order-summary .label {
+        font-weight: 500;
+      }
+      .order-summary .value {
+        font-weight: 600;
+      }
+      .order-summary .total {
+        font-size: 1.2rem;
+        color: #e60000;
+        font-weight: bold;
+      }
+      /* QR Card */
+      .qr-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 20px;
+        text-align: center;
+      }
+      .qr-card img {
+        width: 100%;
+        max-width: 260px;
+        border-radius: 8px;
+        background: #fafafa;
+      }
+      .qr-card button {
+        margin-top: 16px;
+        width: 100%;
+        background: #6b4aac;
+        color: #fff;
+      }
+      /* Info & Links */
+      .info {
+        background: #ff5c5c;
+        color: #2a0e47;
+        padding: 12px;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: 500;
+      }
+      .links {
+        text-align: center;
+        font-size: 0.9rem;
+        line-height: 1.4;
+      }
+      .links a {
+        font-weight: 600;
+      }
+      .links .cancel {
+        display: block;
+        margin-top: 12px;
+        color: #bbb;
+        text-decoration: none;
+        font-size: 0.85rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Order Summary -->
+      <div class="card order-summary">
+        <h2>Pembelian Anda</h2>
+        <div class="row">
+          <div class="label">Jumlah Top‑Up</div>
+          <div class="value" id="item-uc">—</div>
+        </div>
+        <div class="row">
+          <div class="label">User ID</div>
+          <div class="value" id="item-idPemain">—</div>
+        </div>
+        <div class="row">
+          <div class="label">Pedagang</div>
+          <div class="value">Tencent CuanStore</div>
+        </div>
+        <div class="row">
+          <div class="label">Metode Pembayaran</div>
+          <div class="value" id="item-payment">—</div>
+        </div>
+        <hr style="border: none; border-top: 1px solid #eee; margin: 12px 0" />
+        <div class="row">
+          <div class="label total">Jumlah Total</div>
+          <div class="value total" id="item-total">—</div>
+        </div>
+      </div>
+      <!-- QR Code -->
+      <div class="qr-card">
+        <img src="images/Qris code.png" alt="Kode QR Pembayaran" />
+        <button>Simpan kode QR</button>
+      </div>
+      <button id="confirm-paid" style="background-color: #00c853; color: #fff; font-weight: 600">
+        ✔️ Saya Sudah Bayar
+      </button>
+      <!-- Info & Links -->
+      <div class="info">ℹ️ Halaman ini akan diperbarui saat pembayaran Anda selesai</div>
+      <div class="links">
+        Dengan melanjutkan, artinya Anda setuju dengan
+        <a href="#">Syarat dan Ketentuan</a> & <a href="#">Kebijakan Privasi</a> kami. <br /><br />
+        Butuh bantuan? Kunjungi <a href="#">Pusat Bantuan</a> kami!
+        <a href="pubg.html" class="cancel">Batal Transaksi</a>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const nominal = localStorage.getItem("order_uc") || "—";
+        const idPemain = localStorage.getItem("order_idPemain") || "—";
+        const payment = localStorage.getItem("order_payment") || "—";
+        const total = localStorage.getItem("order_total") || "—";
+
+        document.getElementById("item-uc").innerText = nominal;
+        document.getElementById("item-idPemain").innerText = idPemain;
+        document.getElementById("item-payment").innerText = payment;
+        document.getElementById("item-total").innerText = total;
+      });
+
+      document.getElementById("confirm-paid").addEventListener("click", () => {
+        const notif = document.createElement("div");
+        notif.innerText = "✅ Pembayaran diterima. Mengarahkan ke halaman invoice...";
+        Object.assign(notif.style, {
+          background: "#4caf50",
+          color: "#fff",
+          padding: "16px",
+          marginTop: "20px",
+          borderRadius: "10px",
+          textAlign: "center",
+          fontWeight: "600",
+        });
+        document.querySelector(".container").appendChild(notif);
+        setTimeout(() => {
+          window.location.href = "invoice_pubg.html";
+        }, 2500);
+      });
+    </script>
+  </body>
+</html>

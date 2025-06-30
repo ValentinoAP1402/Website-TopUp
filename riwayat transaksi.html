@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Riwayat Transaksi - CuanStore</title>
+    <style>
+      /* Copy styles from home.html for consistency */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Segoe UI", Tahoma, sans-serif;
+        background-color: #2a0e47;
+        color: #fff;
+      }
+      header {
+        background-color: #39125b;
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+      }
+
+      .header-left {
+        display: flex;
+        align-items: center;
+      }
+
+      .hamburger {
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 1.5rem;
+        cursor: pointer;
+        margin-right: 15px;
+        padding: 5px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        width: 25px;
+        height: 20px;
+      }
+
+      .hamburger span {
+        display: block;
+        height: 3px;
+        width: 100%;
+        background-color: #fff;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+      }
+
+      header .logo {
+        font-size: 1.4rem;
+        font-weight: bold;
+      }
+
+      header nav a {
+        color: #fff;
+        text-decoration: none;
+        margin-left: 20px;
+        font-size: 0.9rem;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: -300px;
+        width: 300px;
+        height: 100vh;
+        background-color: #2a0e47;
+        z-index: 1000;
+        transition: left 0.3s ease;
+        overflow-y: auto;
+      }
+
+      .sidebar.open {
+        left: 0;
+      }
+
+      .sidebar-header {
+        padding: 20px;
+        border-bottom: 1px solid #39125b;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .close-btn {
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 5px;
+      }
+
+      .user-info {
+        padding: 20px;
+        border-bottom: 1px solid #39125b;
+      }
+
+      .user-name {
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      .user-date {
+        font-size: 0.85rem;
+        color: #ccc;
+      }
+
+      .sidebar-menu {
+        list-style: none;
+        padding: 0;
+      }
+
+      .sidebar-menu li {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .sidebar-menu a {
+        display: flex;
+        align-items: center;
+        padding: 15px 20px;
+        color: #fff;
+        text-decoration: none;
+        transition: background-color 0.2s;
+      }
+
+      .sidebar-menu a:hover {
+        background-color: #39125b;
+      }
+
+      .sidebar-menu .icon {
+        margin-right: 15px;
+        font-size: 1.2rem;
+        width: 20px;
+        text-align: center;
+      }
+
+      .logout-btn {
+        margin: 20px;
+        padding: 12px 20px;
+        background-color: #6b46c1;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        width: calc(100% - 40px);
+        transition: background-color 0.2s;
+      }
+
+      .logout-btn:hover {
+        background-color: #553c9a;
+      }
+
+      /* Overlay */
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .overlay.active {
+        opacity: 1;
+        visibility: visible;
+      }
+      section {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 0 20px;
+      }
+      section h2 {
+        font-size: 1.4rem;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      th {
+        background-color: #39125b;
+      }
+      td {
+        background-color: #2a0e47;
+      }
+      .status {
+        color: #38a169; /* Hijau untuk fulfilled */
+        font-weight: bold;
+      }
+      .no-data {
+        text-align: center;
+        margin-top: 40px;
+        color: #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h3>Menu</h3>
+        <button class="close-btn" id="closeSidebar">×</button>
+      </div>
+
+      <div class="user-info" id="sidebarUserInfo">
+        <!-- User info akan diisi oleh JavaScript -->
+      </div>
+
+      <ul class="sidebar-menu">
+        <li>
+          <a href="home.html"><span class="icon">🏠</span>Halaman Utama</a>
+        </li>
+        <li>
+          <a href="info akun.html"><span class="icon">👤</span>Info Akun</a>
+        </li>
+        <li>
+          <a href="riwayat transaksi.html"
+            ><span class="icon">📋</span>Riwayat Transaksi</a
+          >
+        </li>
+        <li>
+          <a href="#"><span class="icon">⚙️</span>Pengaturan</a>
+        </li>
+      </ul>
+
+      <button class="logout-btn" onclick="logout()">Keluar</button>
+    </div>
+
+    <header>
+      <div class="header-left">
+        <button class="hamburger" id="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <div class="logo">CUANSTORE</div>
+      </div>
+      <nav id="user-area">
+        <!-- isi akan digenerate oleh JS -->
+      </nav>
+    </header>
+    <section>
+      <h2>Riwayat Transaksi</h2>
+      <div id="history-container"></div>
+    </section>
+    <script>
+      // Sidebar toggle
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
+      document.getElementById("hamburger").addEventListener("click", () => {
+        sidebar.classList.add("open");
+        overlay.classList.add("active");
+        document.body.style.overflow = "hidden";
+      });
+      document.getElementById("closeSidebar").addEventListener("click", () => {
+        sidebar.classList.remove("open");
+        overlay.classList.remove("active");
+        document.body.style.overflow = "";
+      });
+      overlay.addEventListener("click", () => {
+        sidebar.classList.remove("open");
+        overlay.classList.remove("active");
+        document.body.style.overflow = "";
+      });
+      function logout() {
+        localStorage.removeItem("cuanUser");
+        window.location.href = "home.html";
+      }
+
+      // Load user info
+      const user = JSON.parse(localStorage.getItem("cuanUser")) || {};
+      document.getElementById("sidebarUserInfo").innerHTML = user.name
+        ? `<div class="user-name">${user.name}</div><div class="user-date">Telah tergabung ${user.date}</div>`
+        : `<div class="user-name">Guest</div><div class="user-date">Silakan login untuk mengakses fitur</div>`;
+
+      // Load and display transaction history
+      const history = JSON.parse(
+        localStorage.getItem("transactionHistory") || "[]"
+      );
+      const container = document.getElementById("history-container");
+      if (!history.length) {
+        container.innerHTML =
+          '<p class="no-data">Belum ada riwayat transaksi.</p>';
+      } else {
+        let html =
+          "<table><thead><tr><th>Tanggal</th><th>ID Pesanan</th><th>ID Transaksi</th><th>Item</th><th>Jumlah</th><th>Metode</th><th>Total</th><th>Status</th></tr></thead><tbody>";
+        history.forEach((tx) => {
+          html += `<tr><td>${tx.date}</td><td>${tx.orderId}</td><td>${tx.txId}</td><td>${tx.item}</td><td>${tx.nominal}</td><td>${tx.payment}</td><td>${tx.total}</td><td class="status">Fulfilled</td></tr>`;
+        });
+        html += "</tbody></table>";
+        container.innerHTML = html;
+      }
+    </script>
+  </body>
+</html>

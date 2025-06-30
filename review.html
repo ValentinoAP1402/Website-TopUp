@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ulasan Pelanggan</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background: #f5f7fa;
+        color: #333;
+        padding: 20px;
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      header h1 {
+        font-size: 2rem;
+        color: #2c3e50;
+      }
+
+      main {
+        max-width: 500px;
+        margin: 0 auto;
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+
+      textarea,
+      select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 1rem;
+        resize: vertical;
+      }
+
+      select {
+        background-color: #fefefe;
+      }
+
+      .button {
+        width: 48%;
+        padding: 12px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+
+      .button:first-child {
+        background-color: #3498db;
+        color: #fff;
+        margin-right: 4%;
+      }
+
+      .button:first-child:hover {
+        background-color: #2980b9;
+      }
+
+      .button:last-child {
+        background-color: #bdc3c7;
+        color: #2c3e50;
+      }
+
+      .button:last-child:hover {
+        background-color: #95a5a6;
+      }
+
+      @media (max-width: 500px) {
+        .button {
+          width: 100%;
+          margin-bottom: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Berikan Ulasanmu</h1>
+    </header>
+
+    <main>
+      <form id="reviewForm">
+        <div>
+          <label for="reviewText">Tulis ulasan (opsional)</label>
+          <textarea
+            id="reviewText"
+            rows="5"
+            placeholder="Bagikan pengalamanmu..."
+          ></textarea>
+        </div>
+        <div>
+          <label for="reviewRating">Rating</label>
+          <select id="reviewRating">
+            <option value="">— Pilih rating —</option>
+            <option value="5">★★★★★ Sangat Puas</option>
+            <option value="4">★★★★☆ Puas</option>
+            <option value="3">★★★☆☆ Biasa saja</option>
+            <option value="2">★★☆☆☆ Kurang</option>
+            <option value="1">★☆☆☆☆ Sangat Buruk</option>
+          </select>
+        </div>
+        <div
+          style="display: flex; justify-content: space-between; flex-wrap: wrap"
+        >
+          <button type="submit" class="button">Kirim Ulasan</button>
+          <button type="button" id="skipReview" class="button">Lewati</button>
+        </div>
+      </form>
+    </main>
+
+    <script>
+      document
+        .getElementById("reviewForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const text = document.getElementById("reviewText").value.trim();
+          const rating = document.getElementById("reviewRating").value;
+          if (text || rating) {
+            const user = JSON.parse(localStorage.getItem("cuanUser")) || {
+              name: "Guest",
+              avatar: "G",
+            };
+            const today = new Date().toLocaleDateString("id-ID", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            });
+            const reviews = JSON.parse(
+              localStorage.getItem("customerReviews") || "[]"
+            );
+            reviews.push({
+              name: user.name,
+              avatar: user.avatar || user.name[0].toUpperCase(),
+              product: "Valorant – " + localStorage.getItem("order_vp"),
+              rating: parseInt(rating, 10) || 0,
+              date: today,
+              text,
+              helpful: 0,
+            });
+            localStorage.setItem("customerReviews", JSON.stringify(reviews));
+          }
+          window.location.href = "home.html";
+        });
+
+      document
+        .getElementById("skipReview")
+        .addEventListener("click", function () {
+          window.location.href = "home.html";
+        });
+    </script>
+  </body>
+</html>

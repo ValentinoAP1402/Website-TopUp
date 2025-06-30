@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice – Mobile Legends</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, sans-serif;
+        background-color: #f8f8ff;
+        color: #2a0e47;
+        padding: 20px;
+        margin: 0;
+      }
+
+      .invoice-container {
+        max-width: 420px;
+        margin: 0 auto;
+        background-color: #fff;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 16px;
+        color: #6b4aac;
+      }
+
+      .status {
+        background-color: #e0f7e9;
+        color: #2e7d32;
+        padding: 8px 12px;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: 600;
+        margin-bottom: 20px;
+      }
+
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+
+      .info-label {
+        color: #666;
+        font-weight: 500;
+      }
+
+      .info-value {
+        font-weight: bold;
+      }
+
+      .total {
+        text-align: right;
+        font-size: 1.4rem;
+        color: #ff4081;
+        font-weight: bold;
+        margin-top: 16px;
+      }
+
+      .button {
+        display: block;
+        margin: 24px auto 0;
+        padding: 12px 20px;
+        background-color: #6b4aac;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        text-align: center;
+        text-decoration: none;
+        width: 80%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="invoice-container">
+      <h1>INVOICE</h1>
+      <div class="status">✅ Fulfilled</div>
+
+      <div class="info-row">
+        <div class="info-label">Tanggal</div>
+        <div class="info-value" id="item-date">—</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">ID Pesanan</div>
+        <div class="info-value" id="item-orderId">—</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">ID Transaksi</div>
+        <div class="info-value" id="item-transaction">—</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Jumlah Top‑Up</div>
+        <div class="info-value" id="item-nominal">—</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Metode</div>
+        <div class="info-value" id="item-payment">—</div>
+      </div>
+
+      <div class="total" id="item-total">—</div>
+
+      <a href="home.html" class="button">Kembali ke Beranda</a>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Waktu & tanggal
+        const now = new Date();
+        const options = { day: "2-digit", month: "short", year: "numeric" };
+        const formattedDate = now.toLocaleDateString("id-ID", options);
+        localStorage.setItem("order_date", formattedDate);
+
+        // Generate Order & Transaction IDs
+        function generateOrderId() {
+          const d = new Date();
+          const YYYY = d.getFullYear();
+          const MM = String(d.getMonth() + 1).padStart(2, "0");
+          const DD = String(d.getDate()).padStart(2, "0");
+          const hh = String(d.getHours()).padStart(2, "0");
+          const mm = String(d.getMinutes()).padStart(2, "0");
+          const ss = String(d.getSeconds()).padStart(2, "0");
+          const rand = Math.floor(Math.random() * 900) + 100;
+          return `${YYYY}${MM}${DD}${hh}${mm}${ss}${rand}`;
+        }
+        localStorage.setItem("order_id", generateOrderId());
+
+        function generateTransactionId() {
+          const ms = Date.now();
+          const rnd = String(Math.floor(Math.random() * 9000) + 1000);
+          return `T${ms}${rnd}`;
+        }
+        localStorage.setItem("transaction_id", generateTransactionId());
+
+        // Ambil dari storage
+        const date = localStorage.getItem("order_date");
+        const orderId = localStorage.getItem("order_id");
+        const txId = localStorage.getItem("transaction_id");
+        const nominal = localStorage.getItem("order_nominal") || "—";
+        const payment = localStorage.getItem("order_payment") || "—";
+        const total = localStorage.getItem("order_total") || "—";
+
+        // Render ke DOM
+        document.getElementById("item-date").innerText = date;
+        document.getElementById("item-orderId").innerText = orderId;
+        document.getElementById("item-transaction").innerText = txId;
+        document.getElementById("item-nominal").innerText = nominal;
+        document.getElementById("item-payment").innerText = payment;
+        document.getElementById("item-total").innerText = total;
+
+        // PINDAHKAN KODE INI KE SINI - Simpan ke riwayat SETELAH elemen terisi
+        const history = JSON.parse(
+          localStorage.getItem("transactionHistory") || "[]"
+        );
+
+        // Gunakan variabel yang sudah ada, bukan mengambil dari DOM
+        history.push({
+          date: date,
+          orderId: orderId,
+          txId: txId,
+          item: "Mobile Legends",
+          nominal: nominal,
+          payment: payment,
+          total: total,
+        });
+
+        localStorage.setItem("transactionHistory", JSON.stringify(history));
+      });
+    </script>
+  </body>
+</html>

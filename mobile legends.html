@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Top Up Mobile Legends – CuanStore</title>
+    <style>
+      /* ===== Reset & Base Styles ===== */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Segoe UI", Tahoma, sans-serif;
+        background-color: #2a0e47;
+        color: #fff;
+        line-height: 1.6;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      button {
+        cursor: pointer;
+        border: none;
+        border-radius: 6px;
+        padding: 10px 20px;
+        font-size: 1rem;
+      }
+      header {
+        background-color: #39125b;
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+      }
+
+      .header-left {
+        display: flex;
+        align-items: center;
+      }
+
+      .hamburger {
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 1.5rem;
+        cursor: pointer;
+        margin-right: 15px;
+        padding: 5px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        width: 25px;
+        height: 20px;
+      }
+
+      .hamburger span {
+        display: block;
+        height: 3px;
+        width: 100%;
+        background-color: #fff;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+      }
+
+      header .logo {
+        font-size: 1.4rem;
+        font-weight: bold;
+      }
+
+      header nav a {
+        color: #fff;
+        text-decoration: none;
+        margin-left: 20px;
+        font-size: 0.9rem;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: -300px;
+        width: 300px;
+        height: 100vh;
+        background-color: #2a0e47;
+        z-index: 1000;
+        transition: left 0.3s ease;
+        overflow-y: auto;
+      }
+
+      .sidebar.open {
+        left: 0;
+      }
+
+      .sidebar-header {
+        padding: 20px;
+        border-bottom: 1px solid #39125b;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .close-btn {
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 5px;
+      }
+
+      .user-info {
+        padding: 20px;
+        border-bottom: 1px solid #39125b;
+      }
+
+      .user-name {
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      .user-date {
+        font-size: 0.85rem;
+        color: #ccc;
+      }
+
+      .sidebar-menu {
+        list-style: none;
+        padding: 0;
+      }
+
+      .sidebar-menu li {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .sidebar-menu a {
+        display: flex;
+        align-items: center;
+        padding: 15px 20px;
+        color: #fff;
+        text-decoration: none;
+        transition: background-color 0.2s;
+      }
+
+      .sidebar-menu a:hover {
+        background-color: #39125b;
+      }
+
+      .sidebar-menu .icon {
+        margin-right: 15px;
+        font-size: 1.2rem;
+        width: 20px;
+        text-align: center;
+      }
+
+      .logout-btn {
+        margin: 20px;
+        padding: 12px 20px;
+        background-color: #6b46c1;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        width: calc(100% - 40px);
+        transition: background-color 0.2s;
+      }
+
+      .logout-btn:hover {
+        background-color: #553c9a;
+      }
+
+      /* Overlay */
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .overlay.active {
+        opacity: 1;
+        visibility: visible;
+      }
+      .logo {
+        font-size: 1.4rem;
+        font-weight: bold;
+      }
+      nav a {
+        margin-left: 15px;
+      }
+      .voucher-page {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 0 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+      .left,
+      .right {
+        background-color: #39125b;
+        border-radius: 12px;
+        padding: 20px;
+      }
+      .left {
+        flex: 1 1 300px;
+      }
+      .right {
+        flex: 2 1 500px;
+      }
+      .left img {
+        width: 100%;
+        border-radius: 8px;
+        margin-bottom: 15px;
+      }
+      .left p {
+        font-size: 0.95rem;
+      }
+      .step {
+        margin-bottom: 25px;
+      }
+      .step-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .step-num {
+        width: 32px;
+        height: 32px;
+        background-color: #6b4aac;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        margin-right: 10px;
+      }
+      .step-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+      }
+      .box {
+        background-color: #fff;
+        color: #333;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 10px;
+      }
+      .box input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+      }
+      /* Layout input User ID & Zone ID side by side with new sizes */
+      .box .id-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+      .box .id-group input[type="text"] {
+        padding: 12px 16px;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        height: 48px;
+      }
+      .box .id-group input#user-id {
+        flex: 2;
+      }
+      .box .id-group input#zone-id {
+        flex: 1;
+        max-width: 120px;
+      }
+      .box .id-group .paren {
+        display: none;
+      }
+      .box small {
+        display: block;
+        color: #555;
+        font-size: 0.85rem;
+      }
+      #verified {
+        margin-top: 8px;
+        color: green;
+        display: none;
+      }
+
+      /* ===== Grid Options ===== */
+      .grid {
+        display: grid;
+        gap: 12px;
+      }
+      .grid.nominal {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      }
+      .grid.payment {
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      }
+      .card-opt {
+        background-color: #f9f9f9;
+        color: #333;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        padding: 12px;
+        text-align: center;
+        cursor: pointer;
+        transition: border-color 0.2s ease;
+      }
+      .card-opt.selected {
+        border-color: #6b4aac;
+      }
+      .card-opt img {
+        max-width: 40px;
+        margin-bottom: 8px;
+      }
+
+      /* ===== Buy Bar ===== */
+      .buy-bar {
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: #2a0e47;
+        border-top: 1px solid #6b4aac;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .buy-bar .price {
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+      .buy-bar button {
+        background-color: #6b4aac;
+        color: #fff;
+      }
+
+      /* ===== Modal ===== */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+      }
+      .modal {
+        background-color: #fff;
+        color: #333;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 400px;
+        padding: 20px;
+        position: relative;
+      }
+      .modal h4 {
+        margin-bottom: 15px;
+      }
+      .modal .close {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        background-color: #f5f5f5;
+        color: #333;
+        border: none;
+        border-radius: 50%;
+        font-size: 1.2rem;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+      .modal .close:hover {
+        background-color: #e0e0e0;
+      }
+      .modal button {
+        margin-top: 20px;
+        width: 100%;
+      }
+      /* styling untuk ikon */
+      .card-opt {
+        background-color: #fff;
+        color: #333;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        padding: 12px;
+        text-align: center;
+        cursor: pointer;
+        transition: border-color 0.2s;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* ⬅️ Semua isi akan di-center */
+      }
+
+      /* Ketika terpilih */
+      .card-opt.selected {
+        border-color: #6b4aac;
+      }
+
+      /* Ikon VP */
+      .nominal-icon {
+        display: block;
+        margin-bottom: 8px;
+        max-width: 50px; /* atau sesuai kebutuhan */
+      }
+
+      /* Jumlah VP */
+      .nominal-value {
+        font-weight: bold;
+        margin-bottom: 6px;
+      }
+
+      /* Harga */
+      .nominal-price {
+        color: #e60000;
+        font-weight: 600;
+      }
+
+      /* styling harga pada kartu pembayaran */
+      .pay-price {
+        margin-top: 6px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #e60000;
+        display: none; /* disembunyikan saat belum dipilih nominal */
+      }
+      .card-opt.selected + .pay-price,
+      .card-opt .pay-price {
+        display: block;
+      }
+
+      .grid.payment .card-opt {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* agar semua kartu sekurangnya setinggi ini */
+        min-height: 160px;
+        padding: 12px;
+        /* sebar spasi antar elemen (logo, label, harga) */
+        justify-content: space-between;
+      }
+
+      /* Biarkan .pay-price selalu di dasar kartu */
+      .grid.payment .card-opt .pay-price {
+        margin-top: 0; /* Flexbox with space-between sudah men‑push ke bawah */
+      }
+
+      .no-data {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+        font-style: italic;
+      }
+
+      /* Debug styles */
+      .debug {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        z-index: 1000;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h3>Menu</h3>
+        <button class="close-btn" id="closeSidebar">×</button>
+      </div>
+
+      <div class="user-info" id="sidebarUserInfo">
+        <!-- User info akan diisi oleh JavaScript -->
+      </div>
+
+      <ul class="sidebar-menu">
+        <li>
+          <a href="home.html"><span class="icon">🏠</span>Halaman Utama</a>
+        </li>
+        <li>
+          <a href="info akun.html"><span class="icon">👤</span>Info Akun</a>
+        </li>
+        <li>
+          <a href="riwayat transaksi.html"
+            ><span class="icon">📋</span>Riwayat Transaksi</a
+          >
+        </li>
+        <li>
+          <a href="#"><span class="icon">⚙️</span>Pengaturan</a>
+        </li>
+      </ul>
+
+      <button class="logout-btn" onclick="logout()">Keluar</button>
+    </div>
+
+    <header>
+      <div class="header-left">
+        <button class="hamburger" id="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <div class="logo">CUANSTORE</div>
+      </div>
+      <nav id="user-area">
+        <!-- isi akan digenerate oleh JS -->
+      </nav>
+    </header>
+
+    <!-- Debug info -->
+    <!-- <div class="debug" id="debug-info">Loading products...</div> -->
+
+    <main class="voucher-page">
+      <!-- Left Column -->
+      <section class="left">
+        <img src="images/ml.jpeg" alt="Mobile Legends" />
+        <p>
+          Cuanstore bekerja sama dengan Moonton untuk top up
+          <strong>Diamonds</strong> dengan cepat dan aman. Masukkan User ID-mu,
+          dan Masukkan Zone ID pilih nominal, selesaikan pembayaran, dan
+          Diamonds akan langsung masuk!
+        </p>
+      </section>
+
+      <!-- Right Column: Steps -->
+      <section class="right">
+        <!-- Step 1 -->
+        <div class="step">
+          <div class="step-header">
+            <div class="step-num">1</div>
+            <div class="step-title">Masukkan User ID dan Zone ID</div>
+          </div>
+          <div class="box">
+            <div class="id-group">
+              <input type="text" id="user-id" placeholder="Masukkan User ID" />
+              <input type="text" id="zone-id" placeholder="Zone ID" />
+            </div>
+            <small
+              >Untuk mengetahui User ID dan Zone ID Anda, buka profil pada game.
+              User ID akan tampil di bawah nama karakter, sedangkan Zone ID
+              terlihat dalam tanda kurung. Contoh: 12345678(1234).</small
+            >
+            <div
+              id="verified"
+              style="display: none; color: green; margin-top: 8px"
+            >
+              ✔ Data Ditemukan!
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step">
+          <div class="step-header">
+            <div class="step-num">2</div>
+            <div class="step-title">Pilih Nominal Top Up</div>
+          </div>
+          <div class="grid nominal" id="nominal-grid">
+            <!-- Nominal akan dimuat secara dinamis dari admin_products -->
+            <div class="no-data">Memuat nominal...</div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step">
+          <div class="step-header">
+            <div class="step-num">3</div>
+            <div class="step-title">Pilih Metode Pembayaran</div>
+          </div>
+          <div class="grid payment">
+            <div class="card-opt" data-pay="Qris">
+              <img src="images/qris.png" alt="Qris" /><br />
+              Qris
+              <div class="pay-price"></div>
+            </div>
+            <div class="card-opt" data-pay="GoPay">
+              <img src="images/gopay.png" alt="GoPay" /><br />
+              GoPay
+              <div class="pay-price"></div>
+            </div>
+            <div class="card-opt" data-pay="ShopeePay">
+              <img src="images/shoopepay.png" alt="ShopeePay" /><br />
+              ShopeePay
+              <div class="pay-price"></div>
+            </div>
+            <div class="card-opt" data-pay="OVO">
+              <img src="images/ovo.jpeg" alt="OVO" /><br />
+              OVO
+              <div class="pay-price"></div>
+            </div>
+            <div class="card-opt" data-pay="Bank Transfer">
+              <img src="images/bank transfer.png" alt="Bank Transfer" /><br />
+              Bank Transfer
+              <div class="pay-price"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step">
+          <div class="step-header">
+            <div class="step-num">4</div>
+            <div class="step-title">Masukkan Detail</div>
+          </div>
+          <div class="box promo-section">
+            <div class="input-group">
+              <label
+                for="promo-code"
+                style="display: block; margin-bottom: 6px; font-weight: 500"
+                >Kode Promo</label
+              >
+              <input
+                type="text"
+                id="promo-code"
+                placeholder="Masukkan kode promo"
+              />
+            </div>
+            <div class="input-group" style="margin-top: 10px">
+              <label style="display: flex; align-items: center; gap: 8px">
+                <input type="checkbox" id="promo" />Saya ingin promo via
+                SMS/WhatsApp
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Buy Bar -->
+    <div class="buy-bar">
+      <div class="price" id="total-price">Rp. 0</div>
+      <button id="buy-btn">Beli Sekarang</button>
+    </div>
+
+    <!-- Modal Confirmation -->
+    <div class="modal-backdrop" id="modal">
+      <div class="modal">
+        <button class="close" onclick="closeModal()">×</button>
+        <h4>Detail Pesanan</h4>
+        <p><strong>Nominal:</strong> <span id="conf-nominal"></span></p>
+        <p><strong>User ID:</strong> <span id="conf-user"></span></p>
+        <p><strong>Zone ID:</strong> <span id="conf-zone"></span></p>
+        <p><strong>Pembayaran:</strong> <span id="conf-pay"></span></p>
+        <p><strong>Total:</strong> <span id="conf-total"></span></p>
+        <button onclick="confirmPurchase()">Konfirm</button>
+      </div>
+    </div>
+
+    <script>
+      // Debug function
+      function updateDebugInfo(message) {
+        const debugEl = document.getElementById("debug-info");
+        if (debugEl) {
+          debugEl.innerHTML = message;
+          debugEl.style.display = "block";
+        }
+        console.log("DEBUG:", message);
+      }
+
+      // Elemen dan state
+      const userInput = document.getElementById("user-id");
+      const zoneInput = document.getElementById("zone-id");
+      const verifiedMsg = document.getElementById("verified");
+      const totalPriceEl = document.getElementById("total-price");
+      let selectedNominal = 0;
+      let selectedNominalData = null;
+      let selectedPay = "";
+
+      // Load nominals dari admin_products saat halaman dimuat
+      document.addEventListener("DOMContentLoaded", function () {
+        console.log("DOM loaded, loading products...");
+        loadProducts();
+        setupEventListeners();
+      });
+
+      // Fungsi untuk memuat produk Mobile Legends dari admin_products
+      function loadProducts() {
+        try {
+          // Ambil produk dari admin_products dengan filter kategori mobile-legends
+          const allProducts = JSON.parse(
+            localStorage.getItem("admin_products") || "[]"
+          );
+          const mlProducts = allProducts.filter(
+            (product) => product.category === "mobile-legends"
+          );
+
+          const nominalGrid = document.getElementById("nominal-grid");
+
+          updateDebugInfo(
+            `Found ${mlProducts.length} ML products in admin_products`
+          );
+          console.log("Loaded ML products:", mlProducts);
+
+          if (mlProducts.length === 0) {
+            nominalGrid.innerHTML =
+              '<div class="no-data">Tidak ada nominal tersedia. Silakan tambahkan nominal melalui admin panel.</div>';
+            return;
+          }
+
+          // Buat HTML untuk setiap nominal
+          let nominalsHTML = "";
+          mlProducts.forEach((product, index) => {
+            // Extract diamonds dari nama produk (format: "XXX Diamonds")
+            const diamondsMatch = product.name.match(/(\d+)\s*Diamonds?/i);
+            const diamonds = diamondsMatch ? parseInt(diamondsMatch[1]) : 0;
+
+            nominalsHTML += `
+            <div class="card-opt" 
+                 data-product-id="${product.id}"
+                 data-diamonds="${diamonds}" 
+                 data-price="${product.price}" 
+                 data-index="${index}" 
+                 onclick="selectNominal(this)">
+              <img src="${product.imgUrl}" 
+                   alt="Diamond Icon" 
+                   class="nominal-icon" 
+                   onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIiBmaWxsPSIjNkI0QUFDIi8+Cjx0ZXh0IHg9IjI1IiB5PSIzMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+RE08L3RleHQ+Cjwvc3ZnPg=='" />
+              <div class="nominal-value">${product.name}</div>
+              <div class="nominal-price">Rp. ${product.price.toLocaleString()}</div>
+            </div>
+          `;
+          });
+
+          nominalGrid.innerHTML = nominalsHTML;
+          updateDebugInfo(
+            `Successfully loaded ${mlProducts.length} ML products`
+          );
+
+          // Hide debug info after 3 seconds
+          setTimeout(() => {
+            const debugEl = document.getElementById("debug-info");
+            if (debugEl) debugEl.style.display = "none";
+          }, 3000);
+        } catch (error) {
+          console.error("Error loading products:", error);
+          updateDebugInfo(`Error loading products: ${error.message}`);
+          document.getElementById("nominal-grid").innerHTML =
+            '<div class="no-data">Error memuat nominal. Silakan refresh halaman.</div>';
+        }
+      }
+
+      // Fungsi untuk memilih nominal
+      function selectNominal(element) {
+        try {
+          // Hapus class selected dari semua nominal
+          document
+            .querySelectorAll(".grid.nominal .card-opt")
+            .forEach((card) => {
+              card.classList.remove("selected");
+            });
+
+          // Tambah class selected ke nominal yang dipilih
+          element.classList.add("selected");
+
+          // Simpan data nominal yang dipilih
+          selectedNominal = parseInt(element.dataset.price);
+          selectedNominalData = {
+            productId: parseInt(element.dataset.productId),
+            diamonds: parseInt(element.dataset.diamonds),
+            price: parseInt(element.dataset.price),
+            index: parseInt(element.dataset.index),
+            name: element.querySelector(".nominal-value").textContent,
+          };
+
+          console.log("Selected nominal:", selectedNominalData);
+
+          // Update harga total dan harga pada metode pembayaran
+          updateTotalPrice();
+          updatePaymentPrices();
+        } catch (error) {
+          console.error("Error selecting nominal:", error);
+          alert("Terjadi error saat memilih nominal. Silakan coba lagi.");
+        }
+      }
+
+      // Fungsi untuk update harga total
+      function updateTotalPrice() {
+        totalPriceEl.textContent = `Rp. ${selectedNominal.toLocaleString()}`;
+      }
+
+      // Fungsi untuk update harga pada kartu pembayaran
+      function updatePaymentPrices() {
+        const paymentCards = document.querySelectorAll(
+          ".grid.payment .card-opt"
+        );
+        paymentCards.forEach((card) => {
+          const priceElement = card.querySelector(".pay-price");
+          if (selectedNominal > 0) {
+            priceElement.textContent = `Rp. ${selectedNominal.toLocaleString()}`;
+            priceElement.style.display = "block";
+          } else {
+            priceElement.style.display = "none";
+          }
+        });
+      }
+
+      // Setup event listeners
+      function setupEventListeners() {
+        // Setup event listener untuk metode pembayaran
+        const paymentCards = document.querySelectorAll(
+          ".grid.payment .card-opt"
+        );
+        paymentCards.forEach((card) => {
+          card.addEventListener("click", function () {
+            // Hapus class selected dari semua metode pembayaran
+            paymentCards.forEach((c) => c.classList.remove("selected"));
+
+            // Tambah class selected ke metode yang dipilih
+            this.classList.add("selected");
+
+            // Simpan metode pembayaran yang dipilih
+            selectedPay = this.dataset.pay;
+            console.log("Selected payment method:", selectedPay);
+          });
+        });
+
+        // Setup event listener untuk tombol beli
+        document
+          .getElementById("buy-btn")
+          .addEventListener("click", function () {
+            if (!selectedNominalData) {
+              alert("Silakan pilih nominal terlebih dahulu!");
+              return;
+            }
+
+            if (!selectedPay) {
+              alert("Silakan pilih metode pembayaran terlebih dahulu!");
+              return;
+            }
+
+            const userId = userInput.value.trim();
+            const zoneId = zoneInput.value.trim();
+
+            if (!userId || !zoneId) {
+              alert("Silakan masukkan User ID dan Zone ID terlebih dahulu!");
+              return;
+            }
+
+            // Tampilkan modal konfirmasi
+            showModal();
+          });
+      }
+
+      // Fungsi untuk menampilkan modal
+      function showModal() {
+        document.getElementById("conf-nominal").textContent =
+          selectedNominalData.name;
+        document.getElementById("conf-user").textContent = userInput.value;
+        document.getElementById("conf-zone").textContent = zoneInput.value;
+        document.getElementById("conf-pay").textContent = selectedPay;
+        document.getElementById(
+          "conf-total"
+        ).textContent = `Rp. ${selectedNominal.toLocaleString()}`;
+
+        document.getElementById("modal").style.display = "flex";
+      }
+
+      // Fungsi untuk menutup modal
+      function closeModal() {
+        document.getElementById("modal").style.display = "none";
+      }
+
+      // Fungsi untuk konfirmasi pembelian
+      function confirmPurchase() {
+        try {
+          // Simpan data pembelian ke localStorage
+          const purchases = JSON.parse(
+            localStorage.getItem("purchases") || "[]"
+          );
+
+          const purchase = {
+            id: Date.now(),
+            productId: selectedNominalData.productId,
+            productName: selectedNominalData.name,
+            userId: userInput.value,
+            zoneId: zoneInput.value,
+            diamonds: selectedNominalData.diamonds,
+            price: selectedNominal,
+            paymentMethod: selectedPay,
+            category: "mobile-legends",
+            date: new Date().toISOString(),
+            promoCode: document.getElementById("promo-code").value || "",
+            promoSMS: document.getElementById("promo").checked,
+          };
+
+          purchases.push(purchase);
+          localStorage.setItem("purchases", JSON.stringify(purchases));
+
+          console.log("Purchase saved:", purchase);
+
+          // Simpan data pesanan untuk halaman transaksi
+          localStorage.setItem("order_nominal", selectedNominalData.name);
+          localStorage.setItem("order_userId", userInput.value);
+          localStorage.setItem("order_zoneId", zoneInput.value);
+          localStorage.setItem("order_payment", selectedPay);
+          localStorage.setItem(
+            "order_total",
+            `Rp. ${selectedNominal.toLocaleString()}`
+          );
+
+          // Tutup modal dan arahkan ke halaman transaksi
+          closeModal();
+
+          // Redirect ke halaman transaksi
+          window.location.href = "transaksi mobile legends.html";
+        } catch (error) {
+          console.error("Error confirming purchase:", error);
+          alert("Terjadi error saat memproses pembelian. Silakan coba lagi.");
+        }
+      }
+
+      // Fungsi untuk reset form
+      function resetForm() {
+        userInput.value = "";
+        zoneInput.value = "";
+        document.getElementById("promo-code").value = "";
+        document.getElementById("promo").checked = false;
+        verifiedMsg.style.display = "none";
+
+        // Reset pilihan
+        document.querySelectorAll(".card-opt.selected").forEach((card) => {
+          card.classList.remove("selected");
+        });
+
+        selectedNominal = 0;
+        selectedNominalData = null;
+        selectedPay = "";
+
+        // Reset tampilan harga
+        totalPriceEl.textContent = "Rp. 0";
+        updatePaymentPrices();
+      }
+
+      // Auto refresh products jika ada perubahan di localStorage
+      window.addEventListener("storage", function (e) {
+        if (e.key === "admin_products") {
+          console.log("Products updated, reloading...");
+          loadProducts();
+        }
+      });
+
+      // Refresh products saat window mendapat focus (berguna saat kembali dari admin)
+      window.addEventListener("focus", function () {
+        loadProducts();
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const userArea = document.getElementById("user-area");
+        const sidebarUserInfo = document.getElementById("sidebarUserInfo");
+        const user = JSON.parse(localStorage.getItem("cuanUser"));
+
+        if (user) {
+          // Kosongkan user area ketika sudah login
+          userArea.innerHTML = ``;
+
+          sidebarUserInfo.innerHTML = `
+            <div class="user-name">${user.name}</div>
+            <div class="user-date">Telah tergabung ${user.date}</div>
+          `;
+        } else {
+          userArea.innerHTML = `<a href="welcome.html">Login</a>`;
+          sidebarUserInfo.innerHTML = `
+            <div class="user-name">Guest</div>
+            <div class="user-date">Silakan login untuk mengakses fitur</div>
+          `;
+        }
+      });
+
+      // Sidebar functionality
+      const hamburger = document.getElementById("hamburger");
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
+      const closeSidebar = document.getElementById("closeSidebar");
+
+      function openSidebar() {
+        sidebar.classList.add("open");
+        overlay.classList.add("active");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeSidebarFunc() {
+        sidebar.classList.remove("open");
+        overlay.classList.remove("active");
+        document.body.style.overflow = "";
+      }
+
+      hamburger.addEventListener("click", openSidebar);
+      closeSidebar.addEventListener("click", closeSidebarFunc);
+      overlay.addEventListener("click", closeSidebarFunc);
+
+      function logout() {
+        localStorage.removeItem("cuanUser");
+        closeSidebarFunc();
+        location.reload();
+      }
+
+      // Simple slider logic
+      const slides = document.querySelector(".slides");
+      const dotsContainer = document.querySelector(".dots");
+      const total = slides.children.length;
+      let idx = 0;
+
+      // create dots
+      for (let i = 0; i < total; i++) {
+        const dot = document.createElement("div");
+        dot.classList.add("dot");
+        dot.addEventListener("click", () => moveTo(i));
+        dotsContainer.append(dot);
+      }
+
+      const dots = document.querySelectorAll(".dot");
+
+      function update() {
+        slides.style.transform = `translateX(-${idx * 100}%)`;
+        dots.forEach((d) => d.classList.remove("active"));
+        dots[idx].classList.add("active");
+      }
+
+      function moveTo(i) {
+        idx = i;
+        update();
+      }
+
+      function next() {
+        idx = (idx + 1) % total;
+        update();
+      }
+
+      // init
+      update();
+      setInterval(next, 5000);
+    </script>
+  </body>
+</html>

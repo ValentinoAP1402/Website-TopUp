@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #e0f7fa, #f1f8e9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+
+      .register-container {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 420px;
+        transition: 0.3s ease;
+      }
+
+      h2 {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        color: #2e7d32;
+      }
+
+      .input-group {
+        margin-bottom: 1rem;
+      }
+
+      .input-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+      }
+
+      .input-group input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        font-size: 1rem;
+      }
+
+      .register-button {
+        width: 100%;
+        padding: 0.9rem;
+        background-color: #4caf50;
+        color: white;
+        font-size: 1rem;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+
+      .register-button:hover {
+        background-color: #388e3c;
+      }
+
+      .login-link {
+        text-align: center;
+        margin-top: 1rem;
+        font-size: 0.95rem;
+      }
+
+      .login-link a {
+        color: #388e3c;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .login-link a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="register-container">
+      <h2>Daftar Akun</h2>
+      <form onsubmit="submitForm(event)">
+        <div class="input-group">
+          <label for="name">Nama Lengkap</label>
+          <input type="text" id="name" name="name" required />
+        </div>
+
+        <div class="input-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+
+        <button type="submit" class="register-button">Daftar</button>
+      </form>
+
+      <div class="login-link">Sudah punya akun? <a href="welcome.html">Masuk</a></div>
+    </div>
+
+    <script>
+      function submitForm(event) {
+        event.preventDefault();
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value; // tambahkan password
+
+        // Simpan user beserta tanggal daftar
+        const date = new Date().toLocaleDateString("id-ID", {
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+        });
+
+        // Struktur data lengkap sesuai contoh:
+        const user = { name, email, password, date };
+        localStorage.setItem("cuanUser", JSON.stringify(user));
+
+        window.location.href = "verification_register.html";  
+      }
+    </script>
+  </body>
+</html>

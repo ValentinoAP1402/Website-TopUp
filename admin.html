@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - CuanStore</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, sans-serif;
+        background: #f4f4f4;
+        margin: 0;
+      }
+      header {
+        background: #39125b;
+        color: #fff;
+        padding: 1rem;
+        text-align: center;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+      .card {
+        background: #fff;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5rem;
+      }
+      h2 {
+        margin-bottom: 0.5rem;
+        color: #39125b;
+      }
+      label {
+        display: block;
+        margin: 0.5rem 0 0.25rem;
+        font-weight: 600;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-bottom: 0.5rem;
+        box-sizing: border-box;
+      }
+      .form-row {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+      .form-row > div {
+        flex: 1;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 0.75rem;
+        text-align: left;
+      }
+      th {
+        background: #6b4aac;
+        color: #fff;
+      }
+      td img {
+        width: 40px;
+        height: 40px;
+        object-fit: contain;
+      }
+      button {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-right: 0.5rem;
+      }
+      .btn-add {
+        background: #28a745;
+        color: #fff;
+        margin-bottom: 1rem;
+      }
+      .btn-edit {
+        background: #ffc107;
+        color: #fff;
+      }
+      .btn-delete {
+        background: #dc3545;
+        color: #fff;
+      }
+      nav {
+        margin-bottom: 1rem;
+      }
+      nav button {
+        background: #6b4aac;
+        color: #fff;
+      }
+      .product-form {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+      }
+      .category-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+      }
+      .category-tab {
+        padding: 0.5rem 1rem;
+        border: 1px solid #6b4aac;
+        background: #fff;
+        color: #6b4aac;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .category-tab.active {
+        background: #6b4aac;
+        color: #fff;
+      }
+      .stats-container {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+      .stat-card {
+        background: linear-gradient(135deg, #6b4aac, #8e44ad);
+        color: white;
+        padding: 1rem;
+        border-radius: 8px;
+        flex: 1;
+        text-align: center;
+      }
+      .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+      .stat-label {
+        font-size: 0.9rem;
+      }
+      .report-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+      }
+      .report-tab {
+        padding: 0.5rem 1rem;
+        border: 1px solid #6b4aac;
+        background: #fff;
+        color: #6b4aac;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .report-tab.active {
+        background: #6b4aac;
+        color: #fff;
+      }
+      .chart-container {
+        position: relative;
+        height: 400px;
+        margin-top: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header><h1>Admin Dashboard - CuanStore</h1></header>
+    <div class="container">
+      <nav>
+        <button onclick="showSection('products')">Produk</button>
+        <button onclick="showSection('users')">Akun User</button>
+        <button onclick="showSection('report')">Laporan</button>
+        <button onclick="showSection('reviews')">Ulasan Pelanggan</button>
+        <button
+          onclick="adminLogout()"
+          style="float: right; background: #dc3545"
+        >
+          Logout
+        </button>
+      </nav>
+
+      <!-- Akun User -->
+      <section id="users" class="card" style="display: none">
+        <h2>Kelola Akun User</h2>
+
+        <div class="stats-container">
+          <div class="stat-card">
+            <div class="stat-number" id="user-count">0</div>
+            <div class="stat-label">Total User</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="verified-count">0</div>
+            <div class="stat-label">Terverifikasi</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="unverified-count">0</div>
+            <div class="stat-label">Belum Verifikasi</div>
+          </div>
+        </div>
+
+        <table id="user-table">
+          <thead>
+            <tr>
+              <th>Nama</th>
+              <th>Email</th>
+              <th>Tanggal Daftar</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <!-- Produk -->
+      <section id="products" class="card">
+        <h2>Kelola Produk & Harga</h2>
+
+        <div class="category-tabs">
+          <button
+            class="category-tab"
+            onclick="switchProductForm('mobile-legends')"
+          >
+            Mobile Legends
+          </button>
+          <button class="category-tab" onclick="switchProductForm('pubg')">
+            PUBG
+          </button>
+          <button class="category-tab" onclick="switchProductForm('valorant')">
+            Valorant
+          </button>
+          <button class="category-tab" onclick="switchProductForm('freefire')">
+            Free Fire
+          </button>
+          <button class="category-tab" onclick="switchProductForm('steam')">
+            Steam
+          </button>
+          <button
+            class="category-tab"
+            onclick="switchProductForm('playStation')"
+          >
+            PlayStation
+          </button>
+          <button class="category-tab" onclick="switchProductForm('xbox')">
+            Xbox PC
+          </button>
+        </div>
+
+        <!-- Form Mobile Legends -->
+        <div id="ml-form" class="product-form">
+          <h3>Tambah Produk Mobile Legends</h3>
+          <label for="ml-name">Nama Produk</label>
+          <input
+            type="text"
+            id="ml-name"
+            placeholder="Masukkan nama voucher game"
+          />
+
+          <label for="ml-price">Harga</label>
+          <input type="number" id="ml-price" placeholder="15000" />
+
+          <label for="ml-img">Pilih Ikon</label>
+          <input type="file" id="ml-img" accept="image/*" />
+
+          <button
+            class="btn-add"
+            onclick="addProductByCategory('mobile-legends')"
+          >
+            Tambah Produk
+          </button>
+        </div>
+
+        <!-- Form PUBG -->
+        <div id="pubg-form" class="product-form" style="display: none">
+          <h3>Tambah Produk PUBG</h3>
+          <label for="pubg-name">Nama Produk</label>
+          <input
+            type="text"
+            id="pubg-name"
+            placeholder="Masukkan nama voucher game"
+          />
+
+          <label for="pubg-price">Harga</label>
+          <input type="number" id="pubg-price" placeholder="15000" />
+
+          <label for="ml-img">Pilih Ikon</label>
+          <input type="file" id="ml-img" accept="image/*" />
+
+          <button class="btn-add" onclick="addProductByCategory('pubg')">
+            Tambah Produk
+          </button>
+        </div>
+
+        <!-- Form Valorant -->
+        <div id="valorant-form" class="product-form" style="display: none">
+          <h3>Tambah Produk Valorant</h3>
+          <label for="valorant-name">Nama Produk</label>
+          <input
+            type="text"
+            id="valorant-name"
+            placeholder="Masukkan nama voucher game"
+          />
+
+          <label for="valorant-price">Harga</label>
+          <input type="number" id="valorant-price" placeholder="15000" />
+
+          <label for="ml-img">Pilih Ikon</label>
+          <input type="file" id="ml-img" accept="image/*" />
+
+          <button class="btn-add" onclick="addProductByCategory('valorant')">
+            Tambah Produk
+          </button>
+        </div>
+
+        <!-- Form Free Fire -->
+        <div id="freefire-form" class="product-form" style="display: none">
+          <h3>Tambah Produk Free Fire</h3>
+          <label for="freefire-name">Nama Produk</label>
+          <input
+            type="text"
+            id="freefire-name"
+            placeholder="Masukkan nama voucher game"
+          />
+
+          <label for="freefire-price">Harga</label>
+          <input type="number" id="freefire-price" placeholder="15000" />
+
+          <label for="ml-img">Pilih Ikon</label>
+          <input type="file" id="ml-img" accept="image/*" />
+
+          <button class="btn-add" onclick="addProductByCategory('freefire')">
+            Tambah Produk
+          </button>
+        </div>
+
+        <!-- Form Steam -->
+        <div id="steam-form" class="product-form" style="display: none">
+          <h3>Tambah Produk Steam</h3>
+          <label for="steam-name">Nama Produk</label>
+          <input
+            type="text"
+            id="steam-name"
+            placeholder="Contoh: Steam Wallet $10"
+          />
+
+          <label for="steam-price">Harga</label>
+          <input type="number" id="steam-price" placeholder="150000" />
+
+          <button class="btn-add" onclick="addProductByCategory('steam')">
+            Tambah Produk
+          </button>
+        </div>
+
+        <!-- Form PlayStation -->
+        <div id="playStation-form" class="product-form" style="display: none">
+          <h3>Tambah Produk PlayStation</h3>
+          <label for="playStation-name">Nama Produk</label>
+          <input
+            type="text"
+            id="playStation-name"
+            placeholder="Masukkan nama produk"
+          />
+
+          <label for="playStation-price">Harga</label>
+          <input
+            type="number"
+            id="playStation-price"
+            placeholder="Masukkan harga produk"
+          />
+
+          <button class="btn-add" onclick="addProductByCategory('playStation')">
+            Tambah Produk
+          </button>
+        </div>
+
+        <!-- Form Xbox PC -->
+        <div id="xbox-form" class="product-form" style="display: none">
+          <h3>Tambah Produk Xbox PC</h3>
+          <label for="xbox-name">Nama Produk</label>
+          <input
+            type="text"
+            id="xbox-name"
+            placeholder="Masukkan nama produk"
+          />
+          <label for="xbox-price">Harga</label>
+          <input
+            type="number"
+            id="xbox-price"
+            placeholder="Masukkan harga produk"
+          />
+          <button class="btn-add" onclick="addProductByCategory('xbox')">
+            Tambah Produk
+          </button>
+        </div>
+
+        <table id="prod-table">
+          <thead>
+            <tr id="table-header">
+              <th>Gambar</th>
+              <th>Nama</th>
+              <th>Harga</th>
+              <th>Kategori</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <!-- Laporan -->
+      <section id="report" class="card" style="display: none">
+        <h2>Laporan Pembelian</h2>
+
+        <div class="report-tabs">
+          <button
+            class="report-tab active"
+            onclick="switchReportTab('mobile-legends')"
+          >
+            Mobile Legends
+          </button>
+          <button class="report-tab" onclick="switchReportTab('pubg')">
+            PUBG Mobile
+          </button>
+          <button class="report-tab" onclick="switchReportTab('valorant')">
+            Valorant
+          </button>
+          <button class="report-tab" onclick="switchReportTab('freefire')">
+            Free Fire
+          </button>
+          <button class="report-tab" onclick="switchReportTab('steam')">
+            Steam
+          </button>
+          <button class="report-tab" onclick="switchReportTab('playStation')">
+            PlayStation
+          </button>
+          <button class="report-tab" onclick="switchReportTab('xbox')">
+            Xbox PC
+          </button>
+        </div>
+
+        <div class="chart-container">
+          <canvas id="purchase-chart"></canvas>
+        </div>
+      </section>
+
+      <!-- Ulasan Pelanggan -->
+      <section id="reviews" class="card" style="display: none">
+        <h2>Ulasan Pelanggan</h2>
+        <table id="reviews-table">
+          <thead>
+            <tr>
+              <th>Nama</th>
+              <th>Produk</th>
+              <th>Rating</th>
+              <th>Tanggal</th>
+              <th>Teks</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </div>
+
+    <script>
+      // Variable untuk menyimpan kategori yang sedang aktif
+      let currentActiveCategory = "mobile-legends";
+
+      // Pastikan admin sudah login lewat welcome.html
+      if (
+        typeof localStorage !== "undefined" &&
+        localStorage.getItem("isAdminLoggedIn") !== "true"
+      ) {
+        window.location.href = "welcome.html";
+      } else {
+        // Inisialisasi tampilan
+        showSection("products");
+        loadProducts(currentActiveCategory);
+      }
+
+      function adminLogout() {
+        if (typeof localStorage !== "undefined") {
+          localStorage.removeItem("isAdminLoggedIn");
+        }
+        window.location.href = "admin_login.html";
+      }
+
+      // Navigasi form produk
+      function switchProductForm(type) {
+        // Update kategori aktif
+        currentActiveCategory = type;
+
+        // Update tab active state
+        document.querySelectorAll(".category-tab").forEach((tab) => {
+          tab.classList.remove("active");
+        });
+        event.target.classList.add("active");
+
+        // Hide all forms
+        document.getElementById("ml-form").style.display = "none";
+        document.getElementById("pubg-form").style.display = "none";
+        document.getElementById("valorant-form").style.display = "none";
+        document.getElementById("freefire-form").style.display = "none";
+        document.getElementById("steam-form").style.display = "none";
+        document.getElementById("playStation-form").style.display = "none";
+        document.getElementById("xbox-form").style.display = "none";
+
+        // Show selected form
+        if (type === "mobile-legends") {
+          document.getElementById("ml-form").style.display = "block";
+        } else if (type === "pubg") {
+          document.getElementById("pubg-form").style.display = "block";
+        } else if (type === "valorant") {
+          document.getElementById("valorant-form").style.display = "block";
+        } else if (type === "freefire") {
+          document.getElementById("freefire-form").style.display = "block";
+        } else if (type === "steam") {
+          document.getElementById("steam-form").style.display = "block";
+        } else if (type === "playStation") {
+          document.getElementById("playStation-form").style.display = "block";
+        } else if (type === "xbox") {
+          document.getElementById("xbox-form").style.display = "block";
+        }
+
+        // Update header tabel sesuai kategori
+        updateTableHeader(type);
+
+        // Filter tabel berdasarkan kategori yang dipilih
+        loadProducts(type);
+      }
+
+      // Update header tabel berdasarkan kategori
+      function updateTableHeader(category) {
+        const tableHeader = document.getElementById("table-header");
+        if (category === "steam") {
+          tableHeader.innerHTML = `
+                  <th>Nama</th>
+                  <th>Harga</th>
+                  <th>Kategori</th>
+                  <th>Aksi</th>
+                `;
+        } else if (category === "playStation") {
+          tableHeader.innerHTML = `
+                  <th>Nama</th>
+                  <th>Harga</th>
+                  <th>Kategori</th>
+                  <th>Aksi</th>
+                `;
+        } else if (category === "xbox") {
+          tableHeader.innerHTML = `
+                  <th>Nama</th>
+                  <th>Harga</th>
+                  <th>Kategori</th>
+                  <th>Aksi</th>
+                `;
+        } else {
+          tableHeader.innerHTML = `
+                  <th>Gambar</th>
+                  <th>Nama</th>
+                  <th>Harga</th>
+                  <th>Kategori</th>
+                  <th>Aksi</th>
+                `;
+        }
+      }
+
+      // Initialize with Mobile Legends tab
+      window.onload = function () {
+        if (
+          typeof localStorage === "undefined" ||
+          localStorage.getItem("isAdminLoggedIn") === "true"
+        ) {
+          showSection("products");
+          currentActiveCategory = "mobile-legends";
+          loadProducts(currentActiveCategory);
+          // Set active tab ke mobile-legends
+          document.querySelectorAll(".category-tab").forEach((tab) => {
+            tab.classList.remove("active");
+          });
+          document.querySelector(".category-tab").classList.add("active");
+          updateTableHeader(currentActiveCategory);
+        }
+      };
+
+      // Produk CRUD
+      function getProducts() {
+        if (typeof localStorage === "undefined") return [];
+        return JSON.parse(localStorage.getItem("admin_products") || "[]");
+      }
+      function saveProducts(arr) {
+        if (typeof localStorage !== "undefined") {
+          localStorage.setItem("admin_products", JSON.stringify(arr));
+        }
+      }
+      function loadProducts(filterCategory = null) {
+        const tbl = document.querySelector("#prod-table tbody");
+        tbl.innerHTML = "";
+        let products = getProducts();
+
+        // Filter berdasarkan kategori aktif jika ada
+        if (filterCategory) {
+          products = products.filter((p) => p.category === filterCategory);
+        }
+
+        products.forEach((p, i) => {
+          const originalIndex = getProducts().findIndex(
+            (prod) => prod.id === p.id
+          );
+
+          if (
+            p.category === "steam" ||
+            p.category === "playStation" ||
+            p.category === "xbox"
+          ) {
+            // Tampilan tanpa gambar untuk Steam & PlayStation
+            tbl.innerHTML += `
+            <tr>
+              <td>${p.name}</td>
+              <td>Rp. ${p.price.toLocaleString()}</td>
+              <td>${p.category}</td>
+              <td>
+                <button class="btn-edit" onclick="editProduct(${originalIndex})">✎</button>
+                <button class="btn-delete" onclick="deleteProduct(${originalIndex})">🗑</button>
+              </td>
+            </tr>`;
+          } else {
+            // Tampilan dengan gambar untuk kategori lain
+            tbl.innerHTML += `
+            <tr>
+              <td><img src="${p.imgUrl}" width="40"/></td>
+              <td>${p.name}</td>
+              <td>Rp. ${p.price.toLocaleString()}</td>
+              <td>${p.category}</td>
+              <td>
+                <button class="btn-edit" onclick="editProduct(${originalIndex})">✎</button>
+                <button class="btn-delete" onclick="deleteProduct(${originalIndex})">🗑</button>
+              </td>
+            </tr>`;
+          }
+        });
+      }
+
+      // Tambah produk berdasarkan kategori
+      function addProductByCategory(category) {
+        let name, price;
+        let fileInput;
+
+        if (category === "mobile-legends") {
+          name = document.getElementById("ml-name").value;
+          price = +document.getElementById("ml-price").value;
+          const fileInput = document.getElementById("ml-img");
+          const file = fileInput.files[0];
+          if (!file) {
+            alert("Harap pilih file ikon!");
+            return;
+          }
+          // Buat URL lokal untuk preview
+          imgUrl = URL.createObjectURL(file);
+        } else if (category === "pubg") {
+          name = document.getElementById("pubg-name").value;
+          price = +document.getElementById("pubg-price").value;
+          const fileInput = document.getElementById("pubg-img");
+          const file = fileInput.files[0];
+          if (!file) {
+            alert("Harap pilih file ikon!");
+            return;
+          }
+          // Buat URL lokal untuk preview
+          imgUrl = URL.createObjectURL(file);
+        } else if (category === "valorant") {
+          name = document.getElementById("valorant-name").value;
+          price = +document.getElementById("valorant-price").value;
+          const fileInput = document.getElementById("valorant-img");
+          const file = fileInput.files[0];
+          if (!file) {
+            alert("Harap pilih file ikon!");
+            return;
+          }
+          // Buat URL lokal untuk preview
+          imgUrl = URL.createObjectURL(file);
+        } else if (category === "freefire") {
+          name = document.getElementById("freefire-name").value;
+          price = +document.getElementById("freefire-price").value;
+          const fileInput = document.getElementById("freefire-img");
+          const file = fileInput.files[0];
+          if (!file) {
+            alert("Harap pilih file ikon!");
+            return;
+          }
+          // Buat URL lokal untuk preview
+          const imgUrl = URL.createObjectURL(file);
+        } else if (category === "steam") {
+          name = document.getElementById("steam-name").value;
+          price = +document.getElementById("steam-price").value;
+          imgUrl = ""; // Steam tidak memiliki gambar
+        } else if (category === "playStation") {
+          name = document.getElementById("playStation-name").value;
+          price = +document.getElementById("playStation-price").value;
+          imgUrl = ""; // PlayStation tidak memiliki gambar
+        } else if (category === "xbox") {
+          name = document.getElementById("xbox-name").value;
+          price = +document.getElementById("xbox-price").value;
+          imgUrl = ""; // Xbox PC tidak memiliki gambar
+        }
+
+        // Validasi berbeda untuk Steam
+        if (category === "steam") {
+          if (!name || !price) {
+            alert("Harap lengkapi semua field!");
+            return;
+          }
+        } else if (category === "playStation") {
+          if (!name || !price) {
+            alert("Harap lengkapi semua field!");
+            return;
+          }
+        } else if (category === "xbox") {
+          if (!name || !price) {
+            alert("Harap lengkapi semua field!");
+            return;
+          }
+        }
+        if (file) {
+          imgUrl = URL.createObjectURL(file);
+        } else {
+          imgUrl = "";
+        }
+
+        const arr = getProducts();
+        arr.push({
+          id: Date.now(),
+          name,
+          price,
+          imgUrl,
+          category,
+        });
+        saveProducts(arr);
+        loadProducts(category); // Reload produk sesuai kategori
+
+        // Clear form
+        if (category === "mobile-legends") {
+          document.getElementById("ml-name").value = "";
+          document.getElementById("ml-price").value = "";
+          document.getElementById("ml-img").value = "";
+        } else if (category === "pubg") {
+          document.getElementById("pubg-name").value = "";
+          document.getElementById("pubg-price").value = "";
+          document.getElementById("pubg-img").value = "";
+        } else if (category === "valorant") {
+          document.getElementById("valorant-name").value = "";
+          document.getElementById("valorant-price").value = "";
+          document.getElementById("valorant-img").value = "";
+        } else if (category === "freefire") {
+          document.getElementById("freefire-name").value = "";
+          document.getElementById("freefire-price").value = "";
+          document.getElementById("freefire-img").value = "";
+        } else if (category === "steam") {
+          document.getElementById("steam-name").value = "";
+          document.getElementById("steam-price").value = "";
+        } else if (category === "playStation") {
+          document.getElementById("playStation-name").value = "";
+          document.getElementById("playStation-price").value = "";
+        } else if (category === "xbox") {
+          document.getElementById("xbox-name").value = "";
+          document.getElementById("xbox-price").value = "";
+        }
+      }
+
+      function editProduct(i) {
+        const arr = getProducts(),
+          p = arr[i];
+        const name = prompt("Nama", p.name);
+        const price = +prompt("Harga", p.price);
+
+        if (p.category === "steam") {
+          // Edit produk Steam tanpa gambar
+          if (name && price) {
+            arr[i] = { ...p, name, price };
+            saveProducts(arr);
+            loadProducts(currentActiveCategory);
+          }
+        } else if (p.category === "playStation") {
+          if (name && price) {
+            arr[i] = { ...p, name, price };
+            saveProducts(arr);
+            loadProducts(currentActiveCategory);
+          }
+          // Edit produk PlayStation tanpa gambar
+        } else if (p.category === "xbox") {
+          if (name && price) {
+            arr[i] = { ...p, name, price };
+            saveProducts(arr);
+            loadProducts(currentActiveCategory);
+          }
+          // Edit produk Xbox PC tanpa gambar
+        } else {
+          // Edit produk dengan gambar untuk kategori lain
+          const imgUrl = prompt("URL Gambar", p.imgUrl);
+          const category = prompt("Kategori", p.category);
+          if (name && price && imgUrl && category) {
+            arr[i] = { ...p, name, price, imgUrl, category };
+            saveProducts(arr);
+            loadProducts(currentActiveCategory);
+          }
+        }
+      }
+
+      function deleteProduct(i) {
+        if (confirm("Yakin ingin menghapus produk ini?")) {
+          const arr = getProducts();
+          arr.splice(i, 1);
+          saveProducts(arr);
+          // Load products dengan kategori yang sedang aktif
+          loadProducts(currentActiveCategory);
+        }
+      }
+
+      // Navigasi
+      function showSection(id) {
+        ["products", "users", "report"].forEach(
+          (s) =>
+            (document.getElementById(s).style.display =
+              s === id ? "block" : "none")
+        );
+        if (id === "report") loadReport("mobile-legends"); // Default ke mobile-legends
+        if (id === "users") loadUsers();
+      }
+
+      // Chart instance untuk mencegah duplikasi
+      if (typeof window.chart === "undefined") {
+        window.chart = null;
+      }
+
+      // Current report category
+      let currentReportCategory = "mobile-legends";
+
+      // Fungsi untuk switch tab laporan
+      function switchReportTab(category) {
+        // Update tab active state
+        document.querySelectorAll(".report-tab").forEach((tab) => {
+          tab.classList.remove("active");
+        });
+        event.target.classList.add("active");
+
+        // Set kategori saat ini dan load laporan
+        currentReportCategory = category;
+        loadReport(category);
+      }
+
+      // Ulasan Pelanggan: CRUD (hanya Read + Delete)
+
+      // Ambil array ulasan dari localStorage
+      function getReviews() {
+        return JSON.parse(localStorage.getItem("customerReviews") || "[]");
+      }
+      // Simpan array ulasan ke localStorage
+      function saveReviews(arr) {
+        localStorage.setItem("customerReviews", JSON.stringify(arr));
+      }
+      // Render tabel ulasan
+      function loadReviews() {
+        const tbody = document.querySelector("#reviews-table tbody");
+        tbody.innerHTML = "";
+        const reviews = getReviews();
+        reviews.forEach((rev, i) => {
+          tbody.innerHTML += `
+      <tr>
+        <td>${rev.name}</td>
+        <td>${rev.product}</td>
+        <td>${rev.rating}</td>
+        <td>${rev.date}</td>
+        <td>${rev.text}</td>
+        <td>
+          <button class="btn-delete" onclick="deleteReview(${i})">🗑 Hapus</button>
+        </td>
+      </tr>`;
+        });
+      }
+      // Hapus satu ulasan berdasarkan index
+      function deleteReview(index) {
+        if (!confirm("Yakin ingin menghapus ulasan ini?")) return;
+        const arr = getReviews();
+        arr.splice(index, 1);
+        saveReviews(arr);
+        loadReviews();
+      }
+
+      // Modifikasi showSection supaya memanggil loadReviews()
+      function showSection(id) {
+        ["products", "users", "report", "reviews"].forEach(
+          (s) =>
+            (document.getElementById(s).style.display =
+              s === id ? "block" : "none")
+        );
+        if (id === "users") loadUsers();
+        if (id === "report") loadReport("mobile-legends");
+        if (id === "reviews") loadReviews();
+      }
+
+      // Fungsi laporan yang diperbarui untuk semua kategori
+      function loadReport(category = "mobile-legends") {
+        const products = getProducts().filter((p) => p.category === category);
+        const purchases =
+          typeof localStorage !== "undefined"
+            ? JSON.parse(localStorage.getItem("purchases") || "[]")
+            : [];
+
+        console.log("Products for", category, ":", products); // Debug log
+        console.log("All purchases:", purchases); // Debug log
+
+        // Filter purchases berdasarkan kategori
+        const categoryPurchases = purchases.filter(
+          (tr) => tr.category === category
+        );
+        console.log("Category purchases:", categoryPurchases); // Debug log
+
+        // Hitung berapa pembelian per produk
+        const counts = products.map((p) => {
+          const purchaseCount = categoryPurchases.filter(
+            (tr) => tr.productId == p.id
+          ).length;
+          console.log(
+            `Product ${p.name} (ID: ${p.id}) has ${purchaseCount} purchases`
+          ); // Debug log
+          return {
+            name: p.name,
+            count: purchaseCount,
+          };
+        });
+
+        const labels = counts.map((c) => c.name);
+        const data = counts.map((c) => c.count);
+
+        console.log("Chart labels:", labels); // Debug log
+        console.log("Chart data:", data); // Debug log
+
+        const ctx = document.getElementById("purchase-chart").getContext("2d");
+
+        // Destroy chart yang lama jika ada
+        if (window.chart) {
+          window.chart.destroy();
+        }
+
+        // Buat chart baru
+        window.chart = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels,
+            datasets: [
+              {
+                label: `Pembelian ${getCategoryDisplayName(category)}`,
+                data,
+                backgroundColor: getCategoryColor(category),
+                borderColor: getCategoryBorderColor(category),
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  stepSize: 1,
+                },
+              },
+            },
+            plugins: {
+              title: {
+                display: true,
+                text: `Laporan Pembelian ${getCategoryDisplayName(category)}`,
+              },
+            },
+          },
+        });
+      }
+
+      // Helper functions untuk kategori
+      function getCategoryDisplayName(category) {
+        switch (category) {
+          case "mobile-legends":
+            return "Mobile Legends";
+          case "pubg":
+            return "PUBG Mobile";
+          case "valorant":
+            return "Valorant";
+          case "freefire":
+            return "Free Fire";
+          case "steam":
+            return "Steam";
+          case "playStation":
+            return "PlayStation";
+          case "xbox":
+            return "Xbox PC";
+          default:
+            return category;
+        }
+      }
+
+      function getCategoryColor(category) {
+        switch (category) {
+          case "mobile-legends":
+            return "rgba(107, 74, 172, 0.8)";
+          case "pubg":
+            return "rgba(255, 140, 0, 0.8)";
+          case "valorant":
+            return "rgba(255, 70, 85, 0.8)";
+          case "freefire":
+            return "rgba(255, 193, 7, 0.8)";
+          case "steam":
+            return "rgba(0, 123, 255, 0.8)";
+          case "spotify":
+            return "rgba(30, 215, 96, 0.8)";
+          case "xbox":
+            return "rgba(229, 9, 20, 0.8)";
+          default:
+            return "rgba(107, 74, 172, 0.8)";
+        }
+      }
+
+      function getCategoryBorderColor(category) {
+        switch (category) {
+          case "mobile-legends":
+            return "rgba(107, 74, 172, 1)";
+          case "pubg":
+            return "rgba(255, 140, 0, 1)";
+          case "valorant":
+            return "rgba(255, 70, 85, 1)";
+          case "freefire":
+            return "rgba(255, 193, 7, 1)";
+          case "steam":
+            return "rgba(0, 123, 255, 1)";
+          case "spotify":
+            return "rgba(30, 215, 96, 1)";
+          case "xbox":
+            return "rgba(229, 9, 20, 1)";
+          default:
+            return "rgba(107, 74, 172, 1)";
+        }
+      }
+
+      // User Management Functions
+      function getAllUsers() {
+        if (typeof localStorage === "undefined") return [];
+        const users = [];
+
+        // Ambil semua user dari localStorage
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && key.startsWith("cuanUser_")) {
+            try {
+              const userData = JSON.parse(localStorage.getItem(key));
+              users.push({
+                key: key,
+                ...userData,
+                id: key.replace("cuanUser_", ""),
+              });
+            } catch (e) {
+              // Skip invalid data
+            }
+          }
+        }
+
+        // Juga cek user tunggal untuk backward compatibility
+        const singleUser = localStorage.getItem("cuanUser");
+        if (singleUser) {
+          try {
+            const userData = JSON.parse(singleUser);
+            users.push({
+              key: "cuanUser",
+              ...userData,
+              id: "single",
+            });
+          } catch (e) {
+            // Skip invalid data
+          }
+        }
+
+        return users;
+      }
+
+      function loadUsers() {
+        const users = getAllUsers();
+        const tbody = document.querySelector("#user-table tbody");
+        const userCount = document.getElementById("user-count");
+        const verifiedCount = document.getElementById("verified-count");
+        const unverifiedCount = document.getElementById("unverified-count");
+
+        const verified = users.filter((user) => user.verified).length;
+        const unverified = users.length - verified;
+
+        userCount.textContent = users.length;
+        verifiedCount.textContent = verified;
+        unverifiedCount.textContent = unverified;
+        tbody.innerHTML = "";
+
+        users.forEach((user, index) => {
+          const status = user.verified ? "Terverifikasi" : "Belum Verifikasi";
+          const statusColor = user.verified ? "#28a745" : "#ffc107";
+
+          tbody.innerHTML += `
+                  <tr>
+                    <td>${user.name || "N/A"}</td>
+                    <td>${user.email || "N/A"}</td>
+                    <td>${user.date || "N/A"}</td>
+                    <td style="color: ${statusColor}; font-weight: bold;">${status}</td>
+                    <td>
+                      <button class="btn-edit" onclick="editUser('${
+                        user.key
+                      }')">✎</button>
+                      <button class="btn-delete" onclick="deleteUser('${
+                        user.key
+                      }')">🗑</button>
+                      ${
+                        !user.verified
+                          ? `<button class="btn-add" onclick="verifyUser('${user.key}')" style="background: #17a2b8;">✓</button>`
+                          : ""
+                      }
+                    </td>
+                  </tr>
+                `;
+        });
+      }
+
+      function editUser(userKey) {
+        const userData = JSON.parse(localStorage.getItem(userKey));
+        if (!userData) {
+          alert("User tidak ditemukan!");
+          return;
+        }
+
+        const newName = prompt("Nama Lengkap:", userData.name || "");
+        const newEmail = prompt("Email:", userData.email || "");
+        const newPassword = prompt(
+          "Password Baru (kosongkan jika tidak ingin mengubah):",
+          ""
+        );
+
+        if (newName !== null && newEmail !== null) {
+          // Cek apakah email baru sudah digunakan user lain
+          const allUsers = getAllUsers();
+          const emailExists = allUsers.some(
+            (user) => user.email === newEmail && user.key !== userKey
+          );
+
+          if (emailExists) {
+            alert("Email sudah digunakan oleh user lain!");
+            return;
+          }
+
+          const updatedUser = {
+            ...userData,
+            name: newName || userData.name,
+            email: newEmail || userData.email,
+          };
+
+          if (newPassword && newPassword.trim() !== "") {
+            updatedUser.password = newPassword.trim();
+          }
+
+          localStorage.setItem(userKey, JSON.stringify(updatedUser));
+
+          // Update juga di cuanUser jika ini adalah user yang sedang login
+          const currentUser = localStorage.getItem("cuanUser");
+          if (currentUser) {
+            const currentUserData = JSON.parse(currentUser);
+            if (currentUserData.email === userData.email) {
+              localStorage.setItem("cuanUser", JSON.stringify(updatedUser));
+            }
+          }
+
+          alert("Data user berhasil diperbarui!");
+          loadUsers();
+        }
+      }
+
+      function deleteUser(userKey) {
+        const userData = JSON.parse(localStorage.getItem(userKey));
+        if (!userData) {
+          alert("User tidak ditemukan!");
+          return;
+        }
+
+        if (
+          confirm(
+            `Yakin ingin menghapus akun ${
+              userData.name || userData.email
+            }?\n\nTindakan ini tidak dapat dibatalkan!`
+          )
+        ) {
+          localStorage.removeItem(userKey);
+
+          // Hapus juga dari cuanUser jika ini adalah user yang sedang login
+          const currentUser = localStorage.getItem("cuanUser");
+          if (currentUser) {
+            const currentUserData = JSON.parse(currentUser);
+            if (currentUserData.email === userData.email) {
+              localStorage.removeItem("cuanUser");
+            }
+          }
+
+          alert("Akun user berhasil dihapus!");
+          loadUsers();
+        }
+      }
+
+      function verifyUser(userKey) {
+        const userData = JSON.parse(localStorage.getItem(userKey));
+        if (!userData) {
+          alert("User tidak ditemukan!");
+          return;
+        }
+
+        if (confirm(`Verifikasi akun ${userData.name || userData.email}?`)) {
+          userData.verified = true;
+          localStorage.setItem(userKey, JSON.stringify(userData));
+
+          // Update juga di cuanUser jika ini adalah user yang sedang login
+          const currentUser = localStorage.getItem("cuanUser");
+          if (currentUser) {
+            const currentUserData = JSON.parse(currentUser);
+            if (currentUserData.email === userData.email) {
+              currentUserData.verified = true;
+              localStorage.setItem("cuanUser", JSON.stringify(currentUserData));
+            }
+          }
+
+          alert("Akun user berhasil diverifikasi!");
+          loadUsers();
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verifikasi Akun</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #e0f7fa, #f1f8e9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+
+      .verification-container {
+        background-color: #ffffff;
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 420px;
+        text-align: center;
+        transition: 0.3s ease;
+      }
+
+      h2 {
+        margin-bottom: 1rem;
+        color: #2e7d32;
+      }
+
+      p {
+        font-size: 0.95rem;
+        color: #555;
+        margin-bottom: 1.2rem;
+      }
+
+      .code-display {
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        letter-spacing: 6px;
+        color: #1b5e20;
+      }
+
+      .input-group {
+        text-align: left;
+        margin-bottom: 1rem;
+      }
+
+      .input-group label {
+        display: block;
+        margin-bottom: 0.4rem;
+        font-weight: 600;
+      }
+
+      .input-group input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        font-size: 1rem;
+      }
+
+      .verify-button {
+        width: 100%;
+        padding: 0.9rem;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .verify-button:hover {
+        background-color: #388e3c;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="verification-container">
+      <h2>Verifikasi Email</h2>
+      <p>Kami telah mengirimkan kode ke email Anda.<br />Masukkan kode verifikasi di bawah ini:</p>
+      <div id="display-code" class="code-display">123456</div>
+      <form onsubmit="verifyCode(event)">
+        <div class="input-group">
+          <label for="code">Kode Verifikasi</label>
+          <input type="text" id="code" name="code" required />
+        </div>
+        <button type="submit" class="verify-button">Verifikasi</button>
+      </form>
+    </div>
+
+    <script>
+      window.onload = function () {
+        const user = JSON.parse(localStorage.getItem("cuanUser"));
+        if (!user) {
+          window.location.href = "register.html";
+          return;
+        }
+
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        localStorage.setItem("verificationCode", code);
+        document.getElementById("display-code").textContent = code;
+      };
+
+      function verifyCode(event) {
+        event.preventDefault();
+        const inputCode = document.getElementById("code").value;
+        const savedCode = localStorage.getItem("verificationCode");
+
+        if (inputCode === savedCode) {
+          const user = JSON.parse(localStorage.getItem("cuanUser"));
+          user.verified = true;
+          localStorage.setItem("cuanUser", JSON.stringify(user));
+          alert("Verifikasi berhasil! Anda akan diarahkan ke Beranda.");
+          window.location.href = "home.html";
+        } else {
+          alert("Kode verifikasi salah. Silakan coba lagi.");
+        }
+      }
+    </script>
+  </body>
+</html>
